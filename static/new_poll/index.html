@@ -1,0 +1,21 @@
+{% load static %}
+<html lang="">
+<head>
+    <title>New poll</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{% static "login_page/styles.css"%}" media="screen" />
+</head>
+<body>
+<div class="placeholder"></div>
+    <form method="POST" action="/new_poll/">
+        {% csrf_token %}
+        <label>
+            <input type="text" name="name" placeholder="enter your name" />
+            <input type="text" name="name" />
+            <input type="submit" value="enter" />
+        </label>
+    </form>
+    <div class="placeholder"></div>
+
+</body>
+</html>
