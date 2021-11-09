@@ -1,10 +1,15 @@
 from __future__ import annotations
+import datetime
+import pytz
 from django.conf import settings
 import json
 import redis
+from django.core.management.commands import flush
 
 redis_instance = redis.Redis(host=settings.REDIS_HOST,
                              port=settings.REDIS_PORT, db=0)
+
+redis_instance.flushdb()
 
 
 def save_poll(data: dict) -> None:
@@ -21,6 +26,9 @@ def save_poll(data: dict) -> None:
             questions[key] = data['questions'][counter][key]
 
     data['questions'] = questions
+    data['date_posted'] = str(datetime.datetime.now(pytz.timezone('Europe/Moscow')))
+    data['date_expires'] = str(datetime.datetime.now(pytz.timezone('Europe/Moscow')) + datetime.timedelta(days=7))
+
     if redis_instance.get('current_id') is None:
         redis_instance.set('current_id', 1)
         redis_instance.set('poll_1', json.dumps(data))
@@ -49,6 +57,3 @@ def get_all_polls() -> dict:
         else:
             return all_polls
 
-
-def flush():
-    redis_instance.flushdb()

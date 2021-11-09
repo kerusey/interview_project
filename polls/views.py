@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 
 
 def show_all_polls(request):
-    pass
+    return render(request, str(settings.BASE_DIR) + "/templates/all_available_polls/index.html")
 
 
 def start_new_poll(request):
@@ -15,13 +15,12 @@ def start_new_poll(request):
 
 @api_view(["POST"])
 def submit_poll(request):
-    data = {"name": request.POST.get('name'), "topic": request.POST.get('topic'),
-            "description": request.POST.get('description'),
-            "questions": [
-                {"question" + str(key): request.POST.get("question" + str(key))} for key in range(10)
-            ]
-        }
-
-    name = request.POST.get("questions")
+    data = {
+        "name": request.POST.get('name'), "topic": request.POST.get('topic'),
+        "description": request.POST.get('description'),
+        "questions": [
+            {"question" + str(key): request.POST.get("question" + str(key))} for key in range(10)
+        ]
+    }
     buisness.save_poll(data)
     return Response(buisness.get_all_polls())
