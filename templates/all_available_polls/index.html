@@ -3,9 +3,30 @@
 <head>
     <title>All available polls</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="{% static "all_available_polls/styles.css"%}" media="screen" />
+
 </head>
 <body>
-    {{ poll. }}
+<div class="col-lg-8 col-lg-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Available Polls</h3>
+            </div>
+
+            <ul class="list-group">
+                {% for poll, values in polls.items %}
+                <li class="list-group-item">
+                    <strong>{{ values.topic }}: {{ values.description }}<br>was posted at {{ values.date_posted }}<br>will be available until {{ values.date_expires }}</strong>
+                    <span class="pull-right">
+                        <a href="#" class="btn btn-info btn-xs">Vote</a> &nbsp;
+                        <a href="#" class="btn btn-default btn-xs">View Results</a> &nbsp;
+                    </span>
+                </li>
+                <br>
+                {% endfor %}
+            </ul>
+
+        </div>
+    </div>
+
 </body>
 </html>

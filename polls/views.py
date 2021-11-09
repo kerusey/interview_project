@@ -6,7 +6,8 @@ from rest_framework.decorators import api_view
 
 
 def show_all_polls(request):
-    return render(request, str(settings.BASE_DIR) + "/templates/all_available_polls/index.html")
+    return render(request, str(settings.BASE_DIR) + "/templates/all_available_polls/index.html",
+                 {'polls': buisness.get_all_polls()})
 
 
 def start_new_poll(request):

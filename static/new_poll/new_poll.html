@@ -7,18 +7,19 @@
     <script src="{% static "new_poll/script.js"%}"></script>
 </head>
 <body>
-<div class="placeholder"></div>
-    <form method="POST" action="/new_poll/">
+    <form method="POST" action="/submit_poll/">
         {% csrf_token %}
         <label>
-            <input type="text" name="name" placeholder="your name" />
-            <input type="text" name="topic" placeholder="poll's topic"/>
-            <input type="text" name="description" placeholder="poll's description"/>
+            <div id="poll">
+                <input type="text" name="name" placeholder="your name" />
+                <input type="text" name="topic" placeholder="poll's topic"/>
+                <input type="text" name="description" placeholder="poll's description"/>
+            </div>
             <button type="button" name="add_to_poll" value="add" onclick="Function()">add question</button>
             <input type="submit" value="enter" />
         </label>
     </form>
+<div class="placeholder"></div>
     <div class="placeholder"></div>
-
 </body>
 </html>

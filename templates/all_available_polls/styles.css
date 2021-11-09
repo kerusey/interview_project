@@ -1,0 +1,7 @@
+.panel-footer {
+    background-color: rgba(245, 245, 220, .5);
+    border-color: rgba(245, 245, 220, .4);
+}
+.panel {
+    box-shadow: 0px 3px 3px 0px #ddd;
+}
