@@ -6,7 +6,7 @@ from . import business
 
 
 def index(request):
-    return render(request, str(settings.BASE_DIR) + '/templates/login_page/new_poll.html')
+    return render(request, str(settings.BASE_DIR) + '/templates/login_page/index.html')
 
 
 @api_view(["POST"])
