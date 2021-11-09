@@ -9,6 +9,10 @@ redis_instance = redis.Redis(host=settings.REDIS_HOST,
                              port=settings.REDIS_PORT, db=0)
 
 
+def create_answers_template(poll_id: int) -> None:
+    redis_instance.set(f'quiz_answers_{poll_id}', json.dumps({'answers': []}))
+
+
 def save_poll(data: dict) -> None:
     remove_from_list = []
     for index in range(len(data['questions'])):
@@ -24,15 +28,20 @@ def save_poll(data: dict) -> None:
 
     data['questions'] = questions
     data['date_posted'] = str(datetime.datetime.now(pytz.timezone('Europe/Moscow')).ctime())
-    data['date_expires'] = str((datetime.datetime.now(pytz.timezone('Europe/Moscow')) + datetime.timedelta(days=7)).ctime())
+    data['date_expires'] = str(
+        (datetime.datetime.now(pytz.timezone('Europe/Moscow')) + datetime.timedelta(days=7)).ctime())
 
     if redis_instance.get('current_id') is None:
+        data['id'] = 1
         redis_instance.set('current_id', 1)
         redis_instance.set('poll_1', json.dumps(data))
     else:
         current_id = int(redis_instance.get('current_id').decode('utf-8'))
+        data['id'] = current_id
         redis_instance.set('current_id', current_id + 1)
         redis_instance.set(f'poll_{current_id}', json.dumps(data))
+
+    create_answers_template(data['id'])
 
 
 def get_poll_by_id(poll_id: int) -> dict | None:
@@ -54,3 +63,16 @@ def get_all_polls() -> dict:
         else:
             return all_polls
 
+
+def save_answers(answers: dict) -> None:
+    saved_data = redis_instance.get('quiz_answers_1')
+    cache = [
+        {f"{index}answer": list(answers['questions'][index].values())[0]} for index in range(len(answers['questions']))
+    ]
+    if saved_data:
+        saved_data = json.loads(saved_data.decode('utf-8'))
+        saved_data += cache
+    else:
+        saved_data = cache
+
+    redis_instance.set(f'quiz_answers_{answers["id"]}', json.dumps(saved_data))
