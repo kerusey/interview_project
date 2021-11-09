@@ -8,9 +8,11 @@ import redis
 redis_instance = redis.Redis(host=settings.REDIS_HOST,
                              port=settings.REDIS_PORT, db=0)
 
+# redis_instance.flushdb()
+
 
 def create_answers_template(poll_id: int) -> None:
-    redis_instance.set(f'quiz_answers_{poll_id}', json.dumps({'answers': []}))
+    redis_instance.set(f'quiz_answers_{poll_id}', json.dumps([]))
 
 
 def save_poll(data: dict) -> None:
@@ -65,14 +67,15 @@ def get_all_polls() -> dict:
 
 
 def save_answers(answers: dict) -> None:
-    saved_data = redis_instance.get('quiz_answers_1')
+    saved_data = json.loads(redis_instance.get(f'quiz_answers_{answers["id"]}').decode('utf-8'))
     cache = [
         {f"{index}answer": list(answers['questions'][index].values())[0]} for index in range(len(answers['questions']))
     ]
+
     if saved_data:
-        saved_data = json.loads(saved_data.decode('utf-8'))
         saved_data += cache
     else:
         saved_data = cache
 
     redis_instance.set(f'quiz_answers_{answers["id"]}', json.dumps(saved_data))
+    print(redis_instance.get(f'quiz_answers_{answers["id"]}'))
